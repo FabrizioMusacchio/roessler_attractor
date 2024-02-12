@@ -21,9 +21,9 @@ import matplotlib.animation as animation
 # parameters for the Rössler attractor:
 a, b, c = 0.2, 0.2, 5.7
 
-# time step and total number of steps:
-dt = 0.01
-step_count = 10000
+# time step and total number of steps (affects the duration of the calculation and the gif):
+dt = 0.03
+step_count = 5000
 
 # initial condition:
 x0, y0, z0 = 0.0, 0.0, 0.0
@@ -49,26 +49,44 @@ path = np.zeros((step_count, 3))
 path[0] = [x0, y0, z0]
 for i in range(1, step_count):
     path[i] = rk4_step(path[i-1], dt, a, b, c)
-# %% PLOTTING/ANIMATION
-# animation:
+# %% PLOTTING THE ATTRACTOR
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot(111, projection='3d')
+ax.plot(path[:, 0], path[:, 1], path[:, 2], lw=0.5)
+ax.set_xlabel("X Axis")
+ax.set_ylabel("Y Axis")
+ax.set_zlabel("Z Axis")
+ax.set_title("Rössler attractor end state")
+plt.tight_layout()
+plt.savefig("roessler_attractor.png", dpi=300)
+plt.show()
+# %% PLOTTING THE ANIMATION
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
+
+# adding a text object for time display:
+time_text = ax.text2D(0.05, 0.95, '', transform=ax.transAxes)
 
 def init():
     ax.set_xlim((np.min(path[:,0]), np.max(path[:,0])))
     ax.set_ylim((np.min(path[:,1]), np.max(path[:,1])))
     ax.set_zlim((np.min(path[:,2]), np.max(path[:,2])))
+    time_text.set_text('')
     return fig,
 
-def update(num, path, line):
+def update(num, path, line, time_text):
     line.set_data(path[:num, 0], path[:num, 1])
     line.set_3d_properties(path[:num, 2])
-    return line,
+    # Update time display with current simulation time
+    time_text.set_text(f'Time = {num*dt:.2f} s')
+    print(f"Current step: {num}, Time: {num*dt:.2f} s")
+    return line, time_text
 
-line, = ax.plot([], [], [], lw=2)
-ani = animation.FuncAnimation(fig, update, step_count, fargs=(path, line),
-                              init_func=init, blit=False)
+line, = ax.plot([], [], [], lw=1)
+ani = animation.FuncAnimation(fig, update, step_count, fargs=(path, line, time_text),
+                              init_func=init, blit=False, interval=1)
 
-ani.save('roessler_attractor.gif', writer='imagemagick', fps=30)
+ani.save('roessler_attractor_with_time.gif', writer='imagemagick', fps=30)
 plt.show()
+print("Done!")
 # %% END
