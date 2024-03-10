@@ -20,6 +20,7 @@ import matplotlib.animation as animation
 # %% PARAMETERS
 # parameters for the Rössler attractor:
 a, b, c = 0.2, 0.2, 5.7
+""" Rössler studied the chaotic attractor with these values"""
 
 # time step and total number of steps (affects the duration of the calculation and the gif):
 dt = 0.03
@@ -56,7 +57,7 @@ ax.plot(path[:, 0], path[:, 1], path[:, 2], lw=0.5)
 ax.set_xlabel("X Axis")
 ax.set_ylabel("Y Axis")
 ax.set_zlabel("Z Axis")
-ax.set_title("Rössler attractor end state")
+ax.set_title(f"Rössler attractor\na={a}, b={b}, c={c}")
 plt.tight_layout()
 plt.savefig("roessler_attractor.png", dpi=300)
 plt.show()
@@ -86,6 +87,7 @@ line, = ax.plot([], [], [], lw=1)
 ani = animation.FuncAnimation(fig, update, step_count, fargs=(path, line, time_text),
                               init_func=init, blit=False, interval=1)
 
+# run and save the animation: 
 ani.save('roessler_attractor_with_time.gif', writer='imagemagick', fps=30)
 plt.show()
 print("Done!")

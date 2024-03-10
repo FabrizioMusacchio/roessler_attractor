@@ -1,6 +1,6 @@
 # Rössler attractor 
 
-Just a simple Pyhton code example for simulating the trajectory of the Rössler attractor.
+Just a simple Python code example for simulating the trajectory of the Rössler attractor. Find more information in this [blog post](https://www.fabriziomusacchio.com/blog/2024-03-10-roessler_attractor/).
 
 For reproducibility:
 
