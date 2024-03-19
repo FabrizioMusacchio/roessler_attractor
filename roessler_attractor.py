@@ -28,6 +28,19 @@ step_count = 5000
 
 # initial condition:
 x0, y0, z0 = 0.0, 0.0, 0.0
+
+# calculated centrally located fixed point (for a=0.2, b=0.2, c=5.7):
+z_fixed = (c - np.sqrt(c**2 - 4*a*b)) / (2*a)
+x_fixed = a * z_fixed
+y_fixed = -z_fixed
+fixed_point = np.array([x_fixed, y_fixed, z_fixed])
+
+# set the eigenvectors found for the central fixed point using Rössler's default parameters:
+# (see blog post for details)
+# Eigenvectors
+v1 = np.array([0.7073, -0.07278-0.7032j, 0.0042-0.0007j])
+v2 = np.array([0.7073, 0.07278+0.7032j, 0.0042+0.0007j])
+v3 = np.array([0.1682, -0.0286, 0.9853])
 # %% FUNCTIONS
 # function to calculate the derivatives:
 def roessler_attractor(state, a, b, c):
@@ -53,13 +66,34 @@ for i in range(1, step_count):
 # %% PLOTTING THE ATTRACTOR
 fig = plt.figure(figsize=(10, 7))
 ax = fig.add_subplot(111, projection='3d')
-ax.plot(path[:, 0], path[:, 1], path[:, 2], lw=0.5)
+ax.plot(path[:, 0], path[:, 1], path[:, 2], lw=1.25)
 ax.set_xlabel("X Axis")
 ax.set_ylabel("Y Axis")
 ax.set_zlabel("Z Axis")
 ax.set_title(f"Rössler attractor\na={a}, b={b}, c={c}")
+plt.legend()
 plt.tight_layout()
 plt.savefig("roessler_attractor.png", dpi=300)
+plt.show()
+# %% PLOTTING THE ATTRACTOR AND EIGENVECTORS
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot(111, projection='3d')
+ax.plot(path[:, 0], path[:, 1], path[:, 2], lw=1.25)
+# plot the fixed point:
+ax.scatter(*fixed_point, s=40, c='r', label="Fixed point 1")
+# plot the real part of the eigenvectors v1, v2, v3, each starting at the fixed point:
+colors = ['g', 'g', 'm']
+for v_i, v in enumerate([v1, v2, v3]):
+    # v_i=1
+    # v = v2
+    ax.quiver(*fixed_point, *v.real, length=10, color=colors[v_i], label=f"Re(v{v_i+1})", lw=1.5)
+ax.set_xlabel("X Axis")
+ax.set_ylabel("Y Axis")
+ax.set_zlabel("Z Axis")
+ax.set_title(f"Rössler attractor\na={a}, b={b}, c={c}")
+plt.legend()
+plt.tight_layout()
+plt.savefig("roessler_attractor_with_fixed_points.png", dpi=300)
 plt.show()
 # %% PLOTTING THE ANIMATION
 fig = plt.figure()
