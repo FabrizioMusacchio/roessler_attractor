@@ -10,3 +10,5 @@ conda activate attractor_networks
 conda install mamba -y
 mamba install -y numpy matplotlib scikit-learn ipykernel
 ```
+
+![img](roessler_attractor.png)
